@@ -36,25 +36,34 @@ app.use('/download', (req, res) => {
     const generatePDF = async () => {
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
-      await page.goto('http://localhost:3000/');
+      await page.goto('http://localhost:3000/preview');
       await page.emulateMedia('screen');
-      await page.pdf({
-        path: `./pdf/${uuid}.pdf`,
+      await page.content()
+
+      const pdf = await page.pdf({
+        // path: `./pdf/${uuid}.pdf`,
         printBackground: true,
         format: 'A4',
         width: '210mm',
         height: '297mm',
       });
+
       await browser.close();
 
-      const file = `${__dirname}/pdf/${uuid}.pdf`;
-      res.download(file);
+      res.contentType("application/pdf");
+      res.send(pdf);
+
+      // const file = `${__dirname}/pdf/${uuid}.pdf`;
+      // res.download(file);
   }
 
   generatePDF();
 
-  // res.send('Hello World!')
-})
+});
+
+// app.use('/save', (req, res) => {
+    
+// });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
