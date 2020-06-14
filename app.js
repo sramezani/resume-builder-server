@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var downloadRouter = require('./routes/download');
 
 const puppeteer = require('puppeteer');
 const { v1: uuidv1 } = require('uuid');
@@ -29,41 +30,7 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/download', (req, res) => {
-  
-    const uuid = uuidv1();
-
-    const generatePDF = async () => {
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-      await page.goto('http://localhost:3000/preview');
-      await page.emulateMedia('screen');
-      await page.content()
-
-      const pdf = await page.pdf({
-        // path: `./pdf/${uuid}.pdf`,
-        printBackground: true,
-        format: 'A4',
-        width: '210mm',
-        height: '297mm',
-      });
-
-      await browser.close();
-
-      res.contentType("application/pdf");
-      res.send(pdf);
-
-      // const file = `${__dirname}/pdf/${uuid}.pdf`;
-      // res.download(file);
-  }
-
-  generatePDF();
-
-});
-
-// app.use('/save', (req, res) => {
-    
-// });
+app.use('/download', downloadRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
