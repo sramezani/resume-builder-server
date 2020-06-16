@@ -38,7 +38,7 @@ MongoClient.connect(env.connectionString, { useUnifiedTopology: true })
           const generatePDF = async () => {
             const browser = await puppeteer.launch();
             const page = await browser.newPage();
-            await page.goto(`http://localhost:3000/preview?export=true&data=${uuid}`, {
+            await page.goto(`https://wtfresume.com/preview?export=true&data=${uuid}`, {
                 waitUntil: 'networkidle2',
               });
             await page.emulateMedia('screen');
